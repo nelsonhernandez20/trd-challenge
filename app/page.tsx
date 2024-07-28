@@ -73,10 +73,35 @@ export default function FormPage() {
     }));
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log("Formulario enviado con los siguientes datos:", formData);
-    console.log("Archivos seleccionados:", selectedFiles);
+    const formDataToSend = new FormData();
+
+    // Añade los archivos al FormData
+    selectedFiles.forEach((file) => formDataToSend.append("files", file));
+
+    // Añade los demás campos del formulario al FormData
+    Object.entries(formData).forEach(([key, value]) =>
+      formDataToSend.append(key, value)
+    );
+
+    // Añade el folderName al FormData
+    formDataToSend.append("folderName", "user-images");
+
+    try {
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formDataToSend,
+      });
+
+      if (response.ok) {
+        console.log("Formulario enviado con éxito");
+      } else {
+        console.error("Error al enviar el formulario");
+      }
+    } catch (error) {
+      console.error("Error al enviar el formulario", error);
+    }
   };
 
   return (
