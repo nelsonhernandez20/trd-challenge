@@ -2,10 +2,11 @@ import React from "react";
 
 export default function InputText({
   id,
-  type,
+  type = "text",
   placeholder,
   value,
-  handleInputChange,
+  handleInputChange = () => {},
+  editable = true, // Por defecto, el input es editable
 }) {
   return (
     <div className="bg-[#272A33] border border-transparent rounded-[11px] h-[66px] relative">
@@ -21,7 +22,8 @@ export default function InputText({
         className="w-full h-full px-3 pt-6 pb-1 text-[#9396A5] bg-transparent border-none focus:outline-none text-[16px] font-normal"
         placeholder={placeholder}
         value={value}
-        onChange={handleInputChange}
+        onChange={editable ? handleInputChange : undefined} // Solo asigna handleInputChange si editable es true
+        readOnly={!editable} // Hace que el input sea de solo lectura si editable es false
       />
     </div>
   );
