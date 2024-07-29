@@ -4,14 +4,14 @@ import Slider from "react-slick";
 
 const Carousel = ({ images, width, height }) => {
   const sliderRef = useRef(null);
-
+  console.log(images.length, "imageeeeeeeeees");
   const settings = {
     dots: true,
-    infinite: true,
+    infinite: false,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: false, // Deshabilita las flechas predeterminadas
+    arrows: false,
     appendDots: (dots) => (
       <div
         style={{
@@ -118,15 +118,18 @@ const Carousel = ({ images, width, height }) => {
   return (
     <div className={`relative ${width} ${height}`}>
       <Slider ref={sliderRef} {...settings}>
-        {images.map((image, index) => (
-          <div key={index}>
-            <img
-              src={image}
-              alt={`Slide ${index}`}
-              className="w-full h-full object-cover rounded-2xl"
-            />
-          </div>
-        ))}
+        {images.map((image, index) => {
+          console.log(`Rendering slide ${index}: ${image}`);
+          return (
+            <div key={index}>
+              <img
+                src={image}
+                alt={`Slide ${index}`}
+                className="w-full h-full object-cover rounded-2xl"
+              />
+            </div>
+          );
+        })}
       </Slider>
     </div>
   );
