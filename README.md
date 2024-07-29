@@ -76,6 +76,7 @@ Para iniciar el proyecto, es necesario configurar las claves de acceso para Supa
      ```
 
 ---
-
+Aca podras ingresar al proyecto desplegado https://trd-challenge.vercel.app/
 Si tienes alguna pregunta o necesitas más detalles, no dudes en contactarme directamente. ¡Estoy aquí para ayudarte!
+
 
