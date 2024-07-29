@@ -27,7 +27,7 @@ La pantalla de perfil utiliza el ID del perfil en la URL para recuperar y mostra
 - **Navegación Directa**: Cada perfil tiene una URL única que incluye su ID.
 - **Obtención de Datos**: Llamo al endpoint específico para obtener la información del perfil según el ID en la URL.
 
-Por ejemplo, la URL para acceder a un perfil podría ser `/perfil/[id]`, donde `[id]` se reemplaza con el identificador real del perfil.
+Por ejemplo, la URL para acceder a un perfil podría ser `/profile/[id]`, donde `[id]` se reemplaza con el identificador real del perfil.
 
 ## Temperatura Actual
 
