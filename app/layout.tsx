@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css"; // Asegúrate de que esta importación incluya las fuentes necesarias
-import './fonts.css'; // Importa el archivo de fuentes personalizado
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import "./fonts.css"; // Importa el archivo de fuentes personalizado
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="font-sf-pro-display">{children}</body>
+      <body className="font-sf-pro-display">
+        {children}
+        <ToastContainer />
+      </body>
     </html>
   );
 }

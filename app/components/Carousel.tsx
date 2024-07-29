@@ -116,25 +116,14 @@ const Carousel = ({ images, width, height }) => {
   };
 
   return (
-    <div
-      style={{
-        position: "relative",
-        width: width || "100%",
-        height: height || "400px",
-      }}
-    >
+    <div className={`relative ${width} ${height}`}>
       <Slider ref={sliderRef} {...settings}>
         {images.map((image, index) => (
           <div key={index}>
             <img
               src={image}
               alt={`Slide ${index}`}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                borderRadius: 20,
-              }}
+              className="w-full h-full object-cover rounded-2xl"
             />
           </div>
         ))}

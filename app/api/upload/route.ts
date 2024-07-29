@@ -59,11 +59,9 @@ export async function POST(request: NextRequest) {
         ContentType: file.type,
       };
 
-      console.log("Upload params:", uploadParams);
 
       try {
         const s3Response = await s3.upload(uploadParams).promise();
-        console.log("S3 response:", s3Response);
         return s3Response.Location;
       } catch (uploadError) {
         console.error("Error al subir archivo a S3:", uploadError);
@@ -95,7 +93,6 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
-    console.log(insertData, "insert data");
     const userId = insertData[0].id;
     
     return NextResponse.json({

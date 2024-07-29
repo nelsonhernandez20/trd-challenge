@@ -7,6 +7,7 @@ import InputText from "@component/app/components/InputText";
 import Image from "next/image";
 import Carousel from "@component/app/components/Carousel";
 import LoadingComponent from "@component/app/components/LoadingComponent";
+import { toast } from "react-toastify";
 
 const Profile = () => {
   const { id } = useParams(); // Obtén el ID desde la URL
@@ -18,6 +19,16 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       if (id) {
+        toast.success('¡Perfil creado exitosamente!', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
         try {
           const response = await fetch(`/api/users/${id}`);
 
@@ -26,7 +37,6 @@ const Profile = () => {
           }
 
           const data = await response.json();
-          console.log(data, "data");
           setUserData(data);
         } catch (error: any) {
           setError(error.message || "Error al obtener datos del usuario");
@@ -68,11 +78,12 @@ const Profile = () => {
   }, []);
 
   if (!id) return <p>ID no disponible</p>;
-  if (loading) return <LoadingComponent title={'Obteniendo datos del usuario'} />;
+  if (loading)
+    return <LoadingComponent title={"Obteniendo datos del usuario"} />;
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="min-h-screen bg-[#111317]">
+    <div className="min-h-screen bg-[#111317] m-0 p-0 flex flex-col">
       <div className="mb-[71px] mt-[50px] flex justify-center">
         <svg
           width="78"
@@ -115,12 +126,16 @@ const Profile = () => {
           />
         </div>
       </div>
-      <div className="flex mx-[10px] md:mx-[80px] pb-[171px]">
-        <div className="flex-shrink-0">
-          <Carousel images={userData.imagelinks} width="509px" height="536px" />
+      <div className="flex flex-col md:flex-col lg:flex-row mx-[10px] md:mx-[80px] pb-[171px]">
+        <div className="flex-shrink-0 flex justify-center md:justify-start">
+          <Carousel
+            images={userData.imagelinks}
+            width="w-[200px] md:w-[509px] lg:w-[509px]"
+            height="h-[200px] md:h-[536px] lg:h-[536px]"
+          />
         </div>
         <div className="flex-1 flex flex-col gap-6 md:pl-[40px] max-w-[620px] md:max-w-[620px] sm:max-w-[620px] mx-auto">
-          {/* personal information */}
+          {/* Información personal */}
           <div className="bg-[#181A1F] px-[16px] pt-[24px] pb-[4px] rounded-lg shadow-md mb-5 w-full">
             <h1 className="text-[20px] mb-6 text-[#9396A5] font-normal">
               Información personal
@@ -135,7 +150,6 @@ const Profile = () => {
                 handleInputChange={() => {}}
               />
             </div>
-
             <div className="mb-6">
               <InputText
                 value={userData.apellido}
@@ -146,7 +160,6 @@ const Profile = () => {
                 handleInputChange={() => {}}
               />
             </div>
-
             <div className="mb-6 bg-[#272A33] border border-transparent rounded-[11px] h-[66px] relative pr-5">
               <InputText
                 value={userData.tipodocumento}
@@ -157,7 +170,6 @@ const Profile = () => {
                 handleInputChange={() => {}}
               />
             </div>
-
             <div className="mb-6">
               <InputText
                 value={userData.numerodocumento}
@@ -168,7 +180,6 @@ const Profile = () => {
                 handleInputChange={() => {}}
               />
             </div>
-
             <div className="mb-6">
               <InputText
                 value={userData.email}
@@ -208,8 +219,7 @@ const Profile = () => {
               </div>
             </div>
           </div>
-
-          {/* other information */}
+          {/* Datos de facturación */}
           <div className="bg-[#181A1F] px-[16px] pt-[24px] pb-[4px] rounded-lg shadow-md mb-5 w-full">
             <h1 className="text-[20px] mb-6 text-[#9396A5] font-normal">
               Datos de facturación
@@ -224,7 +234,6 @@ const Profile = () => {
                 handleInputChange={() => {}}
               />
             </div>
-
             <div className="mb-6">
               <InputText
                 value={userData.apellido}
@@ -235,7 +244,6 @@ const Profile = () => {
                 handleInputChange={() => {}}
               />
             </div>
-
             <div className="mb-6 bg-[#272A33] border border-transparent rounded-[11px] h-[66px] relative pr-5">
               <InputText
                 value={userData.tipodocumento}
@@ -246,7 +254,6 @@ const Profile = () => {
                 handleInputChange={() => {}}
               />
             </div>
-
             <div className="mb-6">
               <InputText
                 value={userData.numerodocumento}
@@ -257,7 +264,6 @@ const Profile = () => {
                 handleInputChange={() => {}}
               />
             </div>
-
             <div className="mb-6">
               <InputText
                 value={userData.email}

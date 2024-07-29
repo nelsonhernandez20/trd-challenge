@@ -1,10 +1,11 @@
 "use client";
 import Image from "next/image";
-// app/form/page.js (estructura nueva) o pages/form.js (estructura clásica)
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import InputText from "./components/InputText";
 import { useRouter } from "next/navigation";
 import LoadingComponent from "./components/LoadingComponent";
+import { toast } from "react-toastify";
+import CustomToast from "./components/CustomToast";
 
 //types
 interface FormData {
@@ -24,6 +25,10 @@ export default function FormPage() {
   const [userId, setUserId] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [isChecked, setIsChecked] = useState(false);
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>(
+    {}
+  );
 
   const [formData, setFormData] = useState<FormData>({
     nombre: "",
@@ -34,6 +39,36 @@ export default function FormPage() {
     telefono: "",
   });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const validateForm = () => {
+    const newErrors: Partial<Record<keyof FormData, string>> = {};
+
+    if (!formData.nombre) newErrors.nombre = "El nombre es requerido.";
+    if (!formData.apellido) newErrors.apellido = "El apellido es requerido.";
+
+    if (!formData.tipoDocumento)
+      newErrors.tipoDocumento = "El tipo de documento es requerido.";
+
+    if (
+      !formData.numeroDocumento ||
+      formData.numeroDocumento.length < 6 ||
+      isNaN(Number(formData.numeroDocumento))
+    ) {
+      newErrors.numeroDocumento = "Número de documento inválido.";
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email || !emailRegex.test(formData.email))
+      newErrors.email = "Correo electrónico inválido.";
+
+    const phoneRegex = /^\d{7,}$/;
+    if (!formData.telefono || !phoneRegex.test(formData.telefono))
+      newErrors.telefono = "Número de teléfono inválido.";
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files ? Array.from(event.target.files) : [];
@@ -80,38 +115,50 @@ export default function FormPage() {
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    setLoading(true);
     event.preventDefault();
-    const formDataToSend = new FormData();
+    if (validateForm()) {
+      if (isChecked) {
+        setLoading(true);
+        const formDataToSend = new FormData();
 
-    // Añade los archivos al FormData
-    selectedFiles.forEach((file) => formDataToSend.append("files", file));
+        selectedFiles.forEach((file) => formDataToSend.append("files", file));
 
-    // Añade los demás campos del formulario al FormData
-    Object.entries(formData).forEach(([key, value]) =>
-      formDataToSend.append(key, value)
-    );
+        Object.entries(formData).forEach(([key, value]) =>
+          formDataToSend.append(key, value)
+        );
 
-    // Añade el folderName al FormData
-    formDataToSend.append("folderName", "user-images");
+        formDataToSend.append("folderName", "user-images");
 
-    try {
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formDataToSend,
-      });
+        try {
+          const response = await fetch("/api/upload", {
+            method: "POST",
+            body: formDataToSend,
+          });
 
-      const result = await response.json(); // Lee el cuerpo de la respuesta como JSON
+          const result = await response.json();
 
-      if (response.ok) {
-        console.log("Formulario enviado con éxito");
-        console.log("ID del usuario registrado:", result.userId); // Maneja el ID del usuario
-        setUserId(result.userId);
+          if (response.ok) {
+            console.log("Formulario enviado con éxito");
+            console.log("ID del usuario registrado:", result.userId);
+            setUserId(result.userId);
+          } else {
+            console.error("Error al enviar el formulario:", result.error);
+          }
+        } catch (error) {
+          console.error("Error al enviar el formulario", error);
+        }
       } else {
-        console.error("Error al enviar el formulario:", result.error); // Maneja el error
+        toast.error('Debes Aceptar Usar los mismos datos para la facturación', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
       }
-    } catch (error) {
-      console.error("Error al enviar el formulario", error);
     }
   };
 
@@ -123,6 +170,10 @@ export default function FormPage() {
       }, 3000);
     }
   }, [userId, router]);
+
+  const handleCheckboxChange = (event: any) => {
+    setIsChecked(event.target.checked);
+  };
 
   return (
     <>
@@ -167,6 +218,7 @@ export default function FormPage() {
                   id={"nombre"}
                   placeholder={"Nombre"}
                   handleInputChange={handleInputChange}
+                  error={errors.nombre}
                 />
               </div>
 
@@ -177,6 +229,7 @@ export default function FormPage() {
                   id={"apellido"}
                   placeholder={"Apellido"}
                   handleInputChange={handleInputChange}
+                  error={errors.apellido}
                 />
               </div>
 
@@ -198,6 +251,9 @@ export default function FormPage() {
                   <option value="pasaporte">Pasaporte</option>
                   <option value="licencia">Licencia de Conducir</option>
                 </select>
+                {errors.tipoDocumento && (
+                  <p className="text-red-500 text-sm">{errors.tipoDocumento}</p>
+                )}
               </div>
 
               <div className="mb-6">
@@ -207,6 +263,7 @@ export default function FormPage() {
                   id={"numeroDocumento"}
                   placeholder={"Número de documento"}
                   handleInputChange={handleInputChange}
+                  error={errors.numeroDocumento}
                 />
               </div>
 
@@ -217,6 +274,7 @@ export default function FormPage() {
                   id={"email"}
                   placeholder={"Correo electrónico"}
                   handleInputChange={handleInputChange}
+                  error={errors.email}
                 />
               </div>
               <div className="flex flex-row mb-6">
@@ -245,6 +303,9 @@ export default function FormPage() {
                     value={formData.telefono}
                     onChange={handleInputChange}
                   />
+                  {errors.telefono && (
+                    <p className="text-red-500 text-sm">{errors.telefono}</p>
+                  )}
                 </div>
               </div>
 
@@ -415,6 +476,8 @@ export default function FormPage() {
                 <input
                   type="checkbox"
                   className="form-checkbox h-5 w-5 text-black rounded-sm border-2 focus:ring-0 accent-[#FCB115]"
+                  checked={isChecked}
+                  onChange={handleCheckboxChange}
                 />
                 <span className="ml-2 text-[#FFFFFF] text-sm font-semibold">
                   Usar los mismos datos para la facturación
