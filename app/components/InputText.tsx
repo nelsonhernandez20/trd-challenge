@@ -5,7 +5,7 @@ export default function InputText({
   type = "text",
   placeholder,
   value,
-  handleInputChange = () => {},
+  handleInputChange,
   editable = true, // Por defecto, el input es editable
 }) {
   return (

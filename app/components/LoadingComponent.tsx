@@ -1,6 +1,8 @@
 import React from "react";
 
-export default function LoadingComponent() {
+export default function LoadingComponent({
+  title = "Estamos validando tus datos",
+}) {
   return (
     <div className="min-h-screen bg-[#111317] flex items-center justify-center">
       <div className="flex flex-col items-center justify-center">
@@ -18,7 +20,7 @@ export default function LoadingComponent() {
           />
         </svg>
         <h2 className="text-[#FFFFFF] text-[20px] font-semibold mt-[20px]">
-          Estamos validando tus datos
+          {title}
         </h2>
       </div>
     </div>
