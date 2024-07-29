@@ -1,8 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useRef, RefObject } from "react";
 import Slider from "react-slick";
-import "react-slick/slick.css";
-import "react-slick/slick-theme.css";
 
 interface CarouselProps {
   images: string[];
