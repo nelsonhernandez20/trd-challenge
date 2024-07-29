@@ -1,10 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useRef } from "react";
+import React, { useRef, RefObject } from "react";
 import Slider from "react-slick";
+import "react-slick/slick.css";
+import "react-slick/slick-theme.css";
 
-const Carousel = ({ images, width, height }) => {
-  const sliderRef = useRef(null);
-  console.log(images.length, "imageeeeeeeeees");
+interface CarouselProps {
+  images: string[];
+  width: string;
+  height: string;
+}
+
+const Carousel: React.FC<CarouselProps> = ({ images, width, height }) => {
+  const sliderRef: RefObject<Slider> = useRef<Slider>(null);
+
   const settings = {
     dots: true,
     infinite: false,
@@ -12,7 +20,7 @@ const Carousel = ({ images, width, height }) => {
     slidesToShow: 1,
     slidesToScroll: 1,
     arrows: false,
-    appendDots: (dots) => (
+    appendDots: (dots: React.ReactNode[]) => (
       <div
         style={{
           position: "absolute",
@@ -33,7 +41,7 @@ const Carousel = ({ images, width, height }) => {
           }}
         >
           <button
-            onClick={() => sliderRef.current.slickPrev()}
+            onClick={() => sliderRef.current?.slickPrev()}
             style={{
               padding: "10px",
               marginRight: "10px",
@@ -48,8 +56,8 @@ const Carousel = ({ images, width, height }) => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
+                fillRule="evenodd"
+                clipRule="evenodd"
                 d="M4.82375 0.944716L0.93875 4.82972C0.35375 5.41472 0.35375 6.35972 0.93875 6.94472L4.82375 10.8297C5.76875 11.7747 7.38875 11.0997 7.38875 9.76471V1.99472C7.38875 0.659716 5.76875 -0.000284135 4.82375 0.944716Z"
                 fill="white"
               />
@@ -78,7 +86,7 @@ const Carousel = ({ images, width, height }) => {
             ))}
           </ul>
           <button
-            onClick={() => sliderRef.current.slickNext()}
+            onClick={() => sliderRef.current?.slickNext()}
             style={{
               padding: "10px",
               marginRight: "10px",
@@ -93,8 +101,8 @@ const Carousel = ({ images, width, height }) => {
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
+                fillRule="evenodd"
+                clipRule="evenodd"
                 d="M2.565 10.8194L6.45 6.93436C7.035 6.34936 7.035 5.40436 6.45 4.81936L2.565 0.934356C1.62 0.00435624 0 0.664356 0 1.99936V9.75436C0 11.1044 1.62 11.7644 2.565 10.8194Z"
                 fill="white"
               />
@@ -103,7 +111,7 @@ const Carousel = ({ images, width, height }) => {
         </div>
       </div>
     ),
-    customPaging: (i) => (
+    customPaging: (i: number) => (
       <div
         style={{
           width: "10px",
@@ -118,18 +126,15 @@ const Carousel = ({ images, width, height }) => {
   return (
     <div className={`relative ${width} ${height}`}>
       <Slider ref={sliderRef} {...settings}>
-        {images.map((image, index) => {
-          console.log(`Rendering slide ${index}: ${image}`);
-          return (
-            <div key={index}>
-              <img
-                src={image}
-                alt={`Slide ${index}`}
-                className="w-full h-full object-cover rounded-2xl"
-              />
-            </div>
-          );
-        })}
+        {images.map((image, index) => (
+          <div key={index}>
+            <img
+              src={image}
+              alt={`Slide ${index}`}
+              className="w-full h-full object-cover rounded-2xl"
+            />
+          </div>
+        ))}
       </Slider>
     </div>
   );
